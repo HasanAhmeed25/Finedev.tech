@@ -89,6 +89,18 @@ function apiDevServerPlugin() {
         }
       });
 
+      server.middlewares.use('/api/client-error', (req: any, res: any) => {
+        if (req.method === 'POST') {
+          let body = '';
+          req.on('data', (chunk: any) => { body += chunk; });
+          req.on('end', () => {
+            console.error('\n🚨 [CLIENT BROWSER ERROR]:', body, '\n');
+            res.statusCode = 200;
+            res.end('ok');
+          });
+        }
+      });
+
       server.middlewares.use('/api/health', (_req: any, res: any) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');

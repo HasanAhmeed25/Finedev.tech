@@ -55,6 +55,25 @@
         background: #8b5cf6;
       }
     </style>
+    <script>
+      window.addEventListener('error', function(e) {
+        var errInfo = JSON.stringify({
+          type: 'error',
+          message: e.message,
+          filename: e.filename,
+          lineno: e.lineno,
+          stack: e.error ? e.error.stack : null
+        });
+        navigator.sendBeacon('/api/client-error', errInfo);
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        var errInfo = JSON.stringify({
+          type: 'unhandledrejection',
+          reason: e.reason ? (e.reason.stack || e.reason.message || String(e.reason)) : 'unknown'
+        });
+        navigator.sendBeacon('/api/client-error', errInfo);
+      });
+    </script>
   </head>
   <body class="bg-[#07080d] text-slate-100 antialiased selection:bg-purple-600/30 selection:text-cyan-300">
     <div id="root"></div>
