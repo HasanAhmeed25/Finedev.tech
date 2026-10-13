@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML, CSS & JavaScript | FineDev.tech</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header class="site-header">
+  <div class="container header-inner">
+
+    <a href="index.html" class="brand">
+      <img src="assets/images/logo.png" alt="FineDev.tech Logo" class="logo-img">
+      <span class="brand-name">FineDev.tech</span>
+    </a>
+
+    <button class="nav-toggle" onclick="toggleMenu()">☰</button>
+    <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+
+
+    <nav class="nav">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="services.html">Services</a>
+      <a class="active" href="course.html">Courses</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+  </div>
+</header>
+
+<!-- ================= COURSE HERO ================= -->
+<section class="section reveal">
+  <div class="container">
+    <h1>HTML, CSS & JavaScript</h1>
+    <p class="muted">
+      Learn web development from scratch by building real websites
+      and working on practical projects.
+    </p>
+
+    <div class="course-meta">
+      <span>⏱ <strong>Duration:</strong> 6 Weeks</span>
+      <span>📚 <strong>Level:</strong> Beginner</span>
+      <span>🧑‍🏫 <strong>Mode:</strong> Practical</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COURSE CONTENT ================= -->
+<section class="section reveal">
+  <div class="container course-layout">
+
+    <!-- LEFT CONTENT -->
+    <div class="course-content">
+      <h2>What You Will Learn</h2>
+      <ul class="course-list">
+        <li>HTML structure, tags and best practices</li>
+        <li>CSS layouts, Flexbox and responsive design</li>
+        <li>JavaScript basics and DOM manipulation</li>
+        <li>Build real responsive websites</li>
+        <li>Mini projects and assignments</li>
+      </ul>
+
+      <h2>Who This Course Is For</h2>
+      <p class="muted">
+        This course is ideal for beginners who want to start web development
+        and students looking for hands-on coding instead of only theory.
+      </p>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="course-sidebar">
+      <div class="card course-info">
+        <h3>Course Info</h3>
+
+        <div class="info-row">
+          <span>Duration</span>
+          <span>6 Weeks</span>
+        </div>
+
+        <div class="info-row">
+          <span>Level</span>
+          <span>Beginner</span>
+        </div>
+
+        <div class="info-row">
+          <span>Projects</span>
+          <span>3+</span>
+        </div>
+
+        <div class="info-row">
+          <span>Support</span>
+          <span>Mentor Guidance</span>
+        </div>
+
+        <a href="contact.html" class="btn btn-primary enroll-btn">
+          Enroll Now
+        </a>
+      </div>
+    </aside>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  © 2025 FineDev.tech
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

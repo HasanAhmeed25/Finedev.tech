@@ -1,0 +1,12 @@
+[
+  {
+    "id": "INQ-MV6R8L7Z-IVRT",
+    "receivedAt": "2026-10-13T14:06:49.967Z",
+    "name": "Jordan Blake",
+    "email": "jordan@example.com",
+    "company": "Horizon Systems",
+    "projectType": "Web Application (SaaS)",
+    "budget": "$15,000 - $30,000",
+    "description": "We need a custom telemetry and customer analytics dashboard with real-time websocket updates."
+  }
+]
