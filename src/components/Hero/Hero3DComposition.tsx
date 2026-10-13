@@ -1,368 +1,329 @@
-import React, { useRef, useMemo, useState, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Float } from '@react-three/drei';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { HeroFallback3D } from './HeroFallback3D';
 
-// Central Glass Cube with inner glowing core and node edges
-const CentralGlassCube = () => {
-  const outerMeshRef = useRef<THREE.Mesh>(null!);
-  const innerMeshRef = useRef<THREE.Mesh>(null!);
-  const edgesRef = useRef<THREE.LineSegments>(null!);
+export const Hero3DComposition: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [hasWebGLError, setHasWebGLError] = useState(false);
 
-  useFrame((_state, delta) => {
-    // Gentle rotation
-    if (outerMeshRef.current) {
-      outerMeshRef.current.rotation.x += delta * 0.25;
-      outerMeshRef.current.rotation.y += delta * 0.35;
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
+
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: true,
+        powerPreference: 'high-performance',
+      });
+    } catch (e) {
+      console.warn('WebGL initialization failed, falling back to CSS 3D:', e);
+      setHasWebGLError(true);
+      return;
     }
-    if (innerMeshRef.current) {
-      innerMeshRef.current.rotation.x -= delta * 0.3;
-      innerMeshRef.current.rotation.y -= delta * 0.4;
-    }
-    if (edgesRef.current && outerMeshRef.current) {
-      edgesRef.current.rotation.x = outerMeshRef.current.rotation.x;
-      edgesRef.current.rotation.y = outerMeshRef.current.rotation.y;
-    }
-  });
 
-  const boxGeometry = useMemo(() => new THREE.BoxGeometry(2.2, 2.2, 2.2), []);
-  const edgesGeometry = useMemo(() => new THREE.EdgesGeometry(boxGeometry), [boxGeometry]);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
+    camera.position.set(0, 0, 7.5);
 
-  return (
-    <group position={[0, 0, 0]}>
-      {/* Outer Translucent Glass Cube */}
-      <mesh ref={outerMeshRef} geometry={boxGeometry}>
-        <meshPhysicalMaterial
-          color="#8b5cf6"
-          roughness={0.1}
-          metalness={0.15}
-          transmission={0.88}
-          ior={1.45}
-          thickness={1.5}
-          transparent={true}
-          opacity={0.7}
-        />
-      </mesh>
+    // Resize handler
+    const updateSize = () => {
+      if (!container || !renderer) return;
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      if (width === 0 || height === 0) return;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    };
 
-      {/* Cube Wireframe Edge Accents */}
-      <lineSegments ref={edgesRef} geometry={edgesGeometry}>
-        <lineBasicMaterial color="#38bdf8" linewidth={1.5} transparent opacity={0.65} />
-      </lineSegments>
+    updateSize();
+    window.addEventListener('resize', updateSize);
 
-      {/* Inner Glowing Core Hexahedron */}
-      <mesh ref={innerMeshRef}>
-        <octahedronGeometry args={[0.9, 0]} />
-        <meshStandardMaterial
-          color="#22d3ee"
-          emissive="#06b6d4"
-          emissiveIntensity={1.8}
-          roughness={0.3}
-          metalness={0.8}
-        />
-      </mesh>
-    </group>
-  );
-};
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+    scene.add(ambientLight);
 
-// Connected Satellite Nodes & Orbiting Lines
-const ConnectedNodes = () => {
-  const groupRef = useRef<THREE.Group>(null!);
+    const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    dirLight.position.set(8, 10, 6);
+    scene.add(dirLight);
 
-  const nodePositions: [number, number, number][] = useMemo(
-    () => [
+    const violetLight = new THREE.PointLight(0xc084fc, 3.5, 15);
+    violetLight.position.set(-5, 4, 3);
+    scene.add(violetLight);
+
+    const cyanLight = new THREE.PointLight(0x22d3ee, 3.5, 15);
+    cyanLight.position.set(5, -4, 3);
+    scene.add(cyanLight);
+
+    // Root Group for Mouse Parallax
+    const rootGroup = new THREE.Group();
+    scene.add(rootGroup);
+
+    // 1. Central Glass Cube & Edges
+    const cubeGroup = new THREE.Group();
+    rootGroup.add(cubeGroup);
+
+    const boxGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
+    const boxMat = new THREE.MeshPhysicalMaterial({
+      color: 0x8b5cf6,
+      roughness: 0.15,
+      metalness: 0.1,
+      transmission: 0.85,
+      ior: 1.45,
+      thickness: 1.2,
+      transparent: true,
+      opacity: 0.7,
+    });
+    const cubeMesh = new THREE.Mesh(boxGeo, boxMat);
+    cubeGroup.add(cubeMesh);
+
+    const edgesGeo = new THREE.EdgesGeometry(boxGeo);
+    const edgesMat = new THREE.LineBasicMaterial({
+      color: 0x38bdf8,
+      linewidth: 1.5,
+      transparent: true,
+      opacity: 0.75,
+    });
+    const edgesMesh = new THREE.LineSegments(edgesGeo, edgesMat);
+    cubeGroup.add(edgesMesh);
+
+    // Inner Glowing Core Octahedron
+    const coreGeo = new THREE.OctahedronGeometry(0.85, 0);
+    const coreMat = new THREE.MeshStandardMaterial({
+      color: 0x22d3ee,
+      emissive: 0x06b6d4,
+      emissiveIntensity: 1.8,
+      roughness: 0.2,
+      metalness: 0.8,
+    });
+    const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+    cubeGroup.add(coreMesh);
+
+    // 2. Connected Satellite Nodes & Rays
+    const nodesGroup = new THREE.Group();
+    rootGroup.add(nodesGroup);
+
+    const nodeCoords: [number, number, number][] = [
       [2.2, 1.4, -0.6],
       [-2.3, 1.2, 0.8],
       [1.8, -2.0, 1.1],
       [-1.9, -1.6, -1.0],
       [0.2, 2.4, 0.4],
       [-0.4, -2.5, 0.5],
-    ],
-    []
-  );
+    ];
 
-  const linesGeometry = useMemo(() => {
-    const points: THREE.Vector3[] = [];
-    nodePositions.forEach((pos, idx) => {
-      // Connect to center origin and to next node
-      points.push(new THREE.Vector3(0, 0, 0));
-      points.push(new THREE.Vector3(...pos));
-
-      const nextPos = nodePositions[(idx + 1) % nodePositions.length];
-      points.push(new THREE.Vector3(...pos));
-      points.push(new THREE.Vector3(...nextPos));
+    const nodeGeo = new THREE.SphereGeometry(0.12, 16, 16);
+    nodeCoords.forEach((coord, i) => {
+      const nodeMat = new THREE.MeshStandardMaterial({
+        color: i % 2 === 0 ? 0xc084fc : 0x22d3ee,
+        emissive: i % 2 === 0 ? 0x9333ea : 0x0284c7,
+        emissiveIntensity: 2.2,
+      });
+      const nodeMesh = new THREE.Mesh(nodeGeo, nodeMat);
+      nodeMesh.position.set(...coord);
+      nodesGroup.add(nodeMesh);
     });
-    return new THREE.BufferGeometry().setFromPoints(points);
-  }, [nodePositions]);
 
-  useFrame((_state, delta) => {
-    if (groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.12;
-      groupRef.current.rotation.z += delta * 0.08;
+    // Connecting Lines
+    const linePoints: THREE.Vector3[] = [];
+    nodeCoords.forEach((coord, idx) => {
+      linePoints.push(new THREE.Vector3(0, 0, 0));
+      linePoints.push(new THREE.Vector3(...coord));
+      const next = nodeCoords[(idx + 1) % nodeCoords.length];
+      linePoints.push(new THREE.Vector3(...coord));
+      linePoints.push(new THREE.Vector3(...next));
+    });
+    const linesGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
+    const linesMat = new THREE.LineBasicMaterial({
+      color: 0x818cf8,
+      transparent: true,
+      opacity: 0.35,
+    });
+    const rays = new THREE.LineSegments(linesGeo, linesMat);
+    nodesGroup.add(rays);
+
+    // 3. Orbiting Torus Ring
+    const torusGeo = new THREE.TorusGeometry(3.1, 0.035, 16, 90);
+    const torusMat = new THREE.MeshStandardMaterial({
+      color: 0xc084fc,
+      emissive: 0xa855f7,
+      emissiveIntensity: 1.4,
+      transparent: true,
+      opacity: 0.55,
+    });
+    const torusMesh = new THREE.Mesh(torusGeo, torusMat);
+    torusMesh.rotation.x = Math.PI / 4;
+    rootGroup.add(torusMesh);
+
+    // 4. Floating Interface Panels
+    const panelGeo1 = new THREE.BoxGeometry(1.6, 0.9, 0.04);
+    const panelMat1 = new THREE.MeshPhysicalMaterial({
+      color: 0x9333ea,
+      roughness: 0.2,
+      metalness: 0.1,
+      transmission: 0.85,
+      transparent: true,
+      opacity: 0.5,
+    });
+    const panel1 = new THREE.Mesh(panelGeo1, panelMat1);
+    panel1.position.set(-2.4, 1.8, -1.0);
+    panel1.rotation.set(0.2, 0.3, -0.1);
+    rootGroup.add(panel1);
+
+    const panelGeo2 = new THREE.BoxGeometry(1.7, 1.0, 0.04);
+    const panelMat2 = new THREE.MeshPhysicalMaterial({
+      color: 0x06b6d4,
+      roughness: 0.2,
+      metalness: 0.1,
+      transmission: 0.85,
+      transparent: true,
+      opacity: 0.5,
+    });
+    const panel2 = new THREE.Mesh(panelGeo2, panelMat2);
+    panel2.position.set(2.5, -1.6, 0.5);
+    panel2.rotation.set(-0.15, -0.3, 0.1);
+    rootGroup.add(panel2);
+
+    // 5. Particle Dust Field
+    const particleCount = 180;
+    const particlePositions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      particlePositions[i] = (Math.random() - 0.5) * 16;
+      particlePositions[i + 1] = (Math.random() - 0.5) * 16;
+      particlePositions[i + 2] = (Math.random() - 0.5) * 10;
     }
-  });
+    const particleGeo = new THREE.BufferGeometry();
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    const particleMat = new THREE.PointsMaterial({
+      size: 0.06,
+      color: 0x38bdf8,
+      transparent: true,
+      opacity: 0.7,
+      sizeAttenuation: true,
+    });
+    const particleField = new THREE.Points(particleGeo, particleMat);
+    scene.add(particleField);
 
-  return (
-    <group ref={groupRef}>
-      {/* Node connecting rays */}
-      <lineSegments geometry={linesGeometry}>
-        <lineBasicMaterial color="#818cf8" transparent opacity={0.3} />
-      </lineSegments>
+    // Pointer Parallax Tracking
+    let targetRotationX = 0;
+    let targetRotationY = 0;
 
-      {/* Floating glowing vertices */}
-      {nodePositions.map((pos, i) => (
-        <mesh key={i} position={pos}>
-          <sphereGeometry args={[0.12, 16, 16]} />
-          <meshStandardMaterial
-            color={i % 2 === 0 ? '#c084fc' : '#22d3ee'}
-            emissive={i % 2 === 0 ? '#9333ea' : '#0284c7'}
-            emissiveIntensity={2}
-          />
-        </mesh>
-      ))}
-    </group>
-  );
-};
+    const handlePointerMove = (e: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      targetRotationY = x * 0.45;
+      targetRotationX = -y * 0.35;
+    };
 
-// Orbiting Torus Ring
-const OrbitingRing = () => {
-  const ringRef = useRef<THREE.Mesh>(null!);
+    window.addEventListener('mousemove', handlePointerMove);
 
-  useFrame((_state, delta) => {
-    if (ringRef.current) {
-      ringRef.current.rotation.x += delta * 0.15;
-      ringRef.current.rotation.y -= delta * 0.2;
-    }
-  });
+    // Animation Loop
+    let animationFrameId: number;
+    let clock = new THREE.Clock();
 
-  return (
-    <mesh ref={ringRef} rotation={[Math.PI / 4, 0, 0]}>
-      <torusGeometry args={[3.2, 0.03, 16, 100]} />
-      <meshStandardMaterial
-        color="#c084fc"
-        emissive="#a855f7"
-        emissiveIntensity={1.2}
-        transparent
-        opacity={0.5}
-      />
-    </mesh>
-  );
-};
+    const animate = () => {
+      animationFrameId = requestAnimationFrame(animate);
+      const delta = clock.getDelta();
+      const elapsedTime = clock.getElapsedTime();
 
-// Floating Abstract UI Panels in 3D Space
-const FloatingInterfacePanel = ({
-  position,
-  rotation,
-  scale = [1.4, 0.8, 0.04],
-  color = '#8b5cf6',
-}: {
-  position: [number, number, number];
-  rotation: [number, number, number];
-  scale?: [number, number, number];
-  color?: string;
-}) => {
-  const meshRef = useRef<THREE.Mesh>(null!);
+      // Smooth float & rotation
+      cubeGroup.position.y = Math.sin(elapsedTime * 1.5) * 0.15;
+      cubeMesh.rotation.x += delta * 0.25;
+      cubeMesh.rotation.y += delta * 0.35;
+      edgesMesh.rotation.x = cubeMesh.rotation.x;
+      edgesMesh.rotation.y = cubeMesh.rotation.y;
+      coreMesh.rotation.x -= delta * 0.3;
+      coreMesh.rotation.y -= delta * 0.4;
 
-  return (
-    <Float speed={2} rotationIntensity={0.4} floatIntensity={0.6}>
-      <mesh ref={meshRef} position={position} rotation={rotation} scale={scale}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshPhysicalMaterial
-          color={color}
-          roughness={0.2}
-          metalness={0.1}
-          transmission={0.85}
-          ior={1.4}
-          transparent
-          opacity={0.55}
-        />
-      </mesh>
-    </Float>
-  );
-};
+      nodesGroup.rotation.y += delta * 0.12;
+      nodesGroup.rotation.z += delta * 0.08;
 
-// Subtle Star / Particle Dust Field
-const ParticleDustField = () => {
-  const count = 180;
-  const pointsRef = useRef<THREE.Points>(null!);
+      torusMesh.rotation.x += delta * 0.15;
+      torusMesh.rotation.y -= delta * 0.2;
 
-  const [positions] = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 16;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 16;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 10;
-    }
-    return [pos];
-  }, [count]);
+      panel1.position.y = 1.8 + Math.sin(elapsedTime * 1.8 + 1) * 0.12;
+      panel2.position.y = -1.6 + Math.cos(elapsedTime * 1.6) * 0.12;
 
-  useFrame((_state, delta) => {
-    if (pointsRef.current) {
-      pointsRef.current.rotation.y += delta * 0.02;
-    }
-  });
+      particleField.rotation.y += delta * 0.02;
 
-  return (
-    <points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.06}
-        color="#38bdf8"
-        transparent
-        opacity={0.7}
-        sizeAttenuation
-      />
-    </points>
-  );
-};
+      // Smooth Parallax Lerp
+      rootGroup.rotation.y += (targetRotationY - rootGroup.rotation.y) * 0.05;
+      rootGroup.rotation.x += (targetRotationX - rootGroup.rotation.x) * 0.05;
 
-// Parallax Scene Root Group
-const ParallaxScene = () => {
-  const groupRef = useRef<THREE.Group>(null!);
+      renderer.render(scene, camera);
+    };
 
-  useFrame((state, delta) => {
-    if (groupRef.current) {
-      // Smooth lerp based on cursor coordinates
-      const targetX = state.pointer.x * 0.35;
-      const targetY = state.pointer.y * 0.25;
-      groupRef.current.rotation.y = THREE.MathUtils.damp(
-        groupRef.current.rotation.y,
-        targetX,
-        3,
-        delta
-      );
-      groupRef.current.rotation.x = THREE.MathUtils.damp(
-        groupRef.current.rotation.x,
-        -targetY,
-        3,
-        delta
-      );
-    }
-  });
+    animate();
 
-  return (
-    <group ref={groupRef}>
-      <Float speed={1.8} rotationIntensity={0.25} floatIntensity={0.5}>
-        <CentralGlassCube />
-        <ConnectedNodes />
-        <OrbitingRing />
+    // Cleanup
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', updateSize);
+      window.removeEventListener('mousemove', handlePointerMove);
 
-        {/* Abstract Software Interface Panels */}
-        <FloatingInterfacePanel
-          position={[-2.4, 1.8, -1]}
-          rotation={[0.2, 0.3, -0.1]}
-          scale={[1.5, 0.9, 0.04]}
-          color="#9333ea"
-        />
-        <FloatingInterfacePanel
-          position={[2.5, -1.6, 0.5]}
-          rotation={[-0.15, -0.3, 0.1]}
-          scale={[1.6, 1.0, 0.04]}
-          color="#06b6d4"
-        />
-      </Float>
-
-      <ParticleDustField />
-    </group>
-  );
-};
-
-// Error Boundary & WebGL capability detection wrapper
-class WebGLErrorBoundary extends React.Component<
-  { children: React.ReactNode; fallback: React.ReactNode },
-  { hasError: boolean }
-> {
-  constructor(props: { children: React.ReactNode; fallback: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: any) {
-    console.warn('WebGL rendering error caught by boundary:', error);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return this.props.fallback;
-    }
-    return this.props.children;
-  }
-}
-
-export const Hero3DComposition: React.FC = () => {
-  const [webGLSupported, setWebGLSupported] = useState<boolean>(true);
-
-  useEffect(() => {
-    // Check if WebGL is supported
-    try {
-      const canvas = document.createElement('canvas');
-      const gl =
-        canvas.getContext('webgl') ||
-        canvas.getContext('experimental-webgl');
-      if (!gl) {
-        setWebGLSupported(false);
-      }
-    } catch {
-      setWebGLSupported(false);
-    }
+      // Dispose resources
+      boxGeo.dispose();
+      boxMat.dispose();
+      edgesGeo.dispose();
+      edgesMat.dispose();
+      coreGeo.dispose();
+      coreMat.dispose();
+      nodeGeo.dispose();
+      linesGeo.dispose();
+      linesMat.dispose();
+      torusGeo.dispose();
+      torusMat.dispose();
+      panelGeo1.dispose();
+      panelMat1.dispose();
+      panelGeo2.dispose();
+      panelMat2.dispose();
+      particleGeo.dispose();
+      particleMat.dispose();
+      renderer.dispose();
+    };
   }, []);
 
-  if (!webGLSupported) {
+  if (hasWebGLError) {
     return <HeroFallback3D />;
   }
 
   return (
-    <WebGLErrorBoundary fallback={<HeroFallback3D />}>
-      <div className="relative w-full h-[450px] lg:h-[540px] select-none flex items-center justify-center">
-        {/* Soft radial background depth */}
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-          <div className="w-80 h-80 rounded-full bg-purple-600/15 blur-[100px]" />
-          <div className="w-72 h-72 rounded-full bg-cyan-500/10 blur-[90px] translate-x-10 translate-y-10" />
-        </div>
+    <div
+      ref={containerRef}
+      className="relative w-full h-[450px] lg:h-[540px] select-none flex items-center justify-center overflow-hidden"
+    >
+      {/* Soft radial background depth */}
+      <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+        <div className="w-80 h-80 rounded-full bg-purple-600/15 blur-[100px]" />
+        <div className="w-72 h-72 rounded-full bg-cyan-500/10 blur-[90px] translate-x-10 translate-y-10" />
+      </div>
 
-        {/* 3D Canvas */}
-        <Canvas
-          camera={{ position: [0, 0, 7.5], fov: 42 }}
-          gl={{
-            antialias: true,
-            alpha: true,
-            powerPreference: 'high-performance',
-          }}
-          className="w-full h-full cursor-grab active:cursor-grabbing"
-        >
-          {/* Ambient & directional lighting */}
-          <ambientLight intensity={0.8} />
-          <directionalLight position={[10, 10, 5]} intensity={1.4} color="#ffffff" />
-          <pointLight position={[-6, 4, 3]} intensity={2.5} color="#c084fc" distance={15} />
-          <pointLight position={[6, -4, 3]} intensity={2.5} color="#22d3ee" distance={15} />
+      {/* 3D Canvas */}
+      <canvas
+        ref={canvasRef}
+        className="w-full h-full cursor-grab active:cursor-grabbing block"
+      />
 
-          {/* Parallax Scene */}
-          <ParallaxScene />
-        </Canvas>
-
-        {/* Interactive Floating Pipeline Badge: "Ideas → Design → Development → Launch" */}
-        <div className="absolute -bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 pointer-events-auto">
-          <div className="px-4 py-2.5 rounded-full bg-[#0e1224]/85 backdrop-blur-xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center gap-2 text-xs font-mono">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-            <span className="text-slate-300 font-medium">Ideas</span>
-            <span className="text-purple-400">→</span>
-            <span className="text-slate-300 font-medium">Design</span>
-            <span className="text-purple-400">→</span>
-            <span className="text-slate-300 font-medium">Development</span>
-            <span className="text-purple-400">→</span>
-            <span className="text-cyan-300 font-semibold">Launch</span>
-          </div>
+      {/* Interactive Floating Pipeline Badge */}
+      <div className="absolute -bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 pointer-events-auto">
+        <div className="px-4 py-2.5 rounded-full bg-[#0e1224]/85 backdrop-blur-xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center gap-2 text-xs font-mono">
+          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+          <span className="text-slate-300 font-medium">Ideas</span>
+          <span className="text-purple-400">→</span>
+          <span className="text-slate-300 font-medium">Design</span>
+          <span className="text-purple-400">→</span>
+          <span className="text-slate-300 font-medium">Development</span>
+          <span className="text-purple-400">→</span>
+          <span className="text-cyan-300 font-semibold">Launch</span>
         </div>
       </div>
-    </WebGLErrorBoundary>
+    </div>
   );
 };
