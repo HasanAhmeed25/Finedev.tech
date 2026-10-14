@@ -17,7 +17,7 @@ export const WhyUsSection: React.FC = () => {
   };
 
   return (
-    <section id="why-us" className="relative py-24 sm:py-32 scroll-mt-12 bg-[var(--bg-secondary)] border-b border-[var(--border-color)] transition-colors">
+    <section id="why-us" className="relative py-24 sm:py-32 scroll-mt-24 bg-[var(--bg-secondary)] border-b border-[var(--border-color)] transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="max-w-3xl mb-16 sm:mb-20 text-left">

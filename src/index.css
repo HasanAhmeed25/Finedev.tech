@@ -23,6 +23,8 @@
     --grid-line: rgba(24, 28, 36, 0.045);
     --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.03), 0 10px 24px -4px rgba(24, 28, 36, 0.04);
     --shadow-card-hover: 0 4px 6px rgba(0, 0, 0, 0.04), 0 20px 32px -8px rgba(36, 89, 232, 0.08);
+    --header-height: 88px;
+    --header-height-mobile: 76px;
   }
 
   :root[data-theme="dark"],
@@ -45,6 +47,8 @@
     --grid-line: rgba(255, 255, 255, 0.035);
     --shadow-card: 0 2px 6px rgba(0, 0, 0, 0.3), 0 12px 28px -6px rgba(0, 0, 0, 0.4);
     --shadow-card-hover: 0 4px 8px rgba(0, 0, 0, 0.35), 0 20px 32px -8px rgba(139, 168, 255, 0.12);
+    --header-height: 88px;
+    --header-height-mobile: 76px;
   }
 
   body {

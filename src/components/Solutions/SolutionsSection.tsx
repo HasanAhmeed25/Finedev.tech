@@ -11,7 +11,7 @@ export const SolutionsSection: React.FC<SolutionsSectionProps> = ({
   onStartInquiryWithSolution,
 }) => {
   return (
-    <section id="solutions" className="relative py-24 sm:py-32 scroll-mt-12 bg-[var(--bg-secondary)] border-y border-[var(--border-color)] transition-colors">
+    <section id="solutions" className="relative py-24 sm:py-32 scroll-mt-24 bg-[var(--bg-secondary)] border-y border-[var(--border-color)] transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="max-w-3xl mb-16 sm:mb-20 text-left">

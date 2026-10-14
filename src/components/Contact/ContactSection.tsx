@@ -122,7 +122,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   };
 
   return (
-    <section id="contact" className="relative py-24 sm:py-32 scroll-mt-12 bg-[var(--bg-secondary)] border-t border-[var(--border-color)] transition-colors">
+    <section id="contact" className="relative py-24 sm:py-32 scroll-mt-24 bg-[var(--bg-secondary)] border-t border-[var(--border-color)] transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 text-left">
           {/* Left Column: Heading & Contact Channels */}

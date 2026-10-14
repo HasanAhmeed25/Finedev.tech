@@ -276,7 +276,7 @@ export const Hero3DComposition: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-[450px] lg:h-[540px] select-none flex items-center justify-center overflow-hidden"
+      className="relative w-full h-[360px] sm:h-[420px] lg:h-[480px] xl:h-[520px] select-none flex items-center justify-center overflow-hidden"
     >
       {/* 3D Canvas */}
       <canvas
@@ -285,7 +285,7 @@ export const Hero3DComposition: React.FC = () => {
       />
 
       {/* Interactive Floating Pipeline Badge */}
-      <div className="absolute -bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 pointer-events-auto">
+      <div className="absolute bottom-1 sm:bottom-3 left-1/2 -translate-x-1/2 z-20 pointer-events-auto">
         <div className="px-4 py-2 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] shadow-sm flex items-center gap-2 text-xs font-mono">
           <span className="w-2 h-2 rounded-full bg-[var(--accent-primary)] animate-pulse" />
           <span className="text-[var(--text-secondary)] font-medium">Ideas</span>

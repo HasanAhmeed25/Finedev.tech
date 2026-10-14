@@ -28,7 +28,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({
   };
 
   return (
-    <section id="services" className="relative py-24 sm:py-32 scroll-mt-12 bg-[var(--bg-primary)] transition-colors">
+    <section id="services" className="relative py-24 sm:py-32 scroll-mt-24 bg-[var(--bg-primary)] transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="max-w-3xl mb-16 sm:mb-20 text-left">

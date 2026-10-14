@@ -75,26 +75,28 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
+        className={`fixed top-0 left-0 right-0 z-50 h-[76px] sm:h-[80px] lg:h-[88px] transition-all duration-200 flex items-center ${
           isScrolled
-            ? 'py-3.5 bg-[var(--bg-card)]/95 backdrop-blur-md border-b border-[var(--border-color)] shadow-xs'
-            : 'py-5 bg-[var(--bg-card)]/80 backdrop-blur-sm border-b border-[var(--border-color)]/60'
+            ? 'bg-[var(--bg-card)]/95 backdrop-blur-md border-b border-[var(--border-color)] shadow-xs'
+            : 'bg-[var(--bg-card)]/90 backdrop-blur-sm border-b border-[var(--border-color)]/80'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            {/* Logo */}
-            <a
-              href="#hero"
-              onClick={(e) => handleNavClick(e, '#hero')}
-              className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] rounded-lg p-1"
-              aria-label="FineDev.tech - Home"
-            >
-              <GeometricLogo />
-            </a>
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+          <div className="grid grid-cols-12 items-center h-full">
+            {/* Left: Logo (col-span-6 on mobile, col-span-3 on desktop) */}
+            <div className="col-span-6 lg:col-span-3 flex items-center justify-start">
+              <a
+                href="#hero"
+                onClick={(e) => handleNavClick(e, '#hero')}
+                className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] rounded-lg py-1 inline-flex items-center"
+                aria-label="FineDev.tech - Home"
+              >
+                <GeometricLogo size={32} />
+              </a>
+            </div>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-1 px-4 py-1.5 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-color)]">
+            {/* Center: Clean Text Navigation (col-span-6, hidden below lg) */}
+            <nav className="hidden lg:flex items-center justify-center col-span-6 gap-6 xl:gap-8">
               {navLinks.map((link) => {
                 const isActive = activeSection === link.id;
                 return (
@@ -102,25 +104,30 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                     key={link.name}
                     href={link.href}
                     onClick={(e) => handleNavClick(e, link.href)}
-                    className={`relative px-4 py-1.5 text-sm font-medium transition-colors rounded-full ${
+                    className={`relative py-1.5 text-sm tracking-normal transition-colors duration-150 group font-medium ${
                       isActive
-                        ? 'text-[var(--accent-primary)] font-semibold bg-[var(--bg-primary)] shadow-xs'
-                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]/50'
+                        ? 'text-[var(--accent-primary)] font-semibold'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
                     }`}
                   >
-                    {link.name}
+                    <span>{link.name}</span>
+                    {isActive ? (
+                      <span className="absolute -bottom-1 left-0 right-0 h-0.5 bg-[var(--accent-primary)] rounded-full transition-all" />
+                    ) : (
+                      <span className="absolute -bottom-1 left-1/2 right-1/2 h-0.5 bg-[var(--accent-primary)] opacity-0 group-hover:left-0 group-hover:right-0 group-hover:opacity-60 rounded-full transition-all duration-200" />
+                    )}
                   </a>
                 );
               })}
             </nav>
 
-            {/* Right Action & Theme Toggle */}
-            <div className="flex items-center gap-3">
+            {/* Right: Theme Toggle & CTA (col-span-6 on mobile, col-span-3 on desktop) */}
+            <div className="col-span-6 lg:col-span-3 flex items-center justify-end gap-2.5 sm:gap-3">
               {/* Theme Toggle Button */}
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="p-2 rounded-full border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent-primary)]/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] transition-all"
+                className="p-2 rounded-full border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent-primary)]/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] transition-all shrink-0"
                 aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
                 title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
               >
@@ -132,22 +139,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
               </button>
 
               {/* Desktop CTA */}
-              <div className="hidden md:flex items-center">
-                <button
-                  type="button"
-                  onClick={handleCtaClick}
-                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-semibold text-white bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] transition-all duration-200 shadow-sm hover:shadow active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
-                >
-                  <span>Let’s Talk</span>
-                  <ArrowUpRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={handleCtaClick}
+                className="hidden sm:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-semibold text-white bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] transition-all duration-200 shadow-xs hover:shadow active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] shrink-0"
+              >
+                <span>Let’s Talk</span>
+                <ArrowUpRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </button>
 
-              {/* Mobile Hamburger Button */}
+              {/* Mobile / Tablet Hamburger Button */}
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden inline-flex items-center justify-center p-2 rounded-lg text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] border border-[var(--border-color)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+                className="lg:hidden inline-flex items-center justify-center p-2 rounded-lg text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] border border-[var(--border-color)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] shrink-0"
                 aria-expanded={mobileMenuOpen}
                 aria-label="Toggle navigation menu"
               >
@@ -161,11 +166,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-40 md:hidden bg-black/40 backdrop-blur-sm animate-fade-in"
+          className="fixed inset-0 z-40 lg:hidden bg-black/40 backdrop-blur-sm animate-fade-in"
           onClick={() => setMobileMenuOpen(false)}
         >
           <div
-            className="fixed top-20 left-4 right-4 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl p-6 shadow-xl flex flex-col gap-4"
+            className="fixed top-20 sm:top-24 left-4 right-4 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl p-6 shadow-xl flex flex-col gap-4"
             onClick={(e) => e.stopPropagation()}
           >
             <nav className="flex flex-col gap-2">

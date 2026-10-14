@@ -24,7 +24,7 @@ export const ProjectShowcaseSection: React.FC<ProjectShowcaseSectionProps> = ({
   });
 
   return (
-    <section id="work" className="relative py-24 sm:py-32 scroll-mt-12 bg-[var(--bg-primary)] border-t border-[var(--border-color)] transition-colors">
+    <section id="work" className="relative py-24 sm:py-32 scroll-mt-24 bg-[var(--bg-primary)] border-t border-[var(--border-color)] transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-left">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16 sm:mb-20">
