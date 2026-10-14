@@ -6,6 +6,7 @@ import { HeroSection } from './components/Hero/HeroSection';
 import { ServicesSection } from './components/Services/ServicesSection';
 import { SolutionsSection } from './components/Solutions/SolutionsSection';
 import { ProcessSection } from './components/Process/ProcessSection';
+import { ProjectShowcaseSection } from './components/Projects/ProjectShowcaseSection';
 import { WhyUsSection } from './components/WhyUs/WhyUsSection';
 import { TechStackSection } from './components/TechStack/TechStackSection';
 import { ContactSection } from './components/Contact/ContactSection';
@@ -100,6 +101,11 @@ export const AppContent: React.FC = () => {
 
         {/* Development Process Section */}
         <ProcessSection />
+
+        {/* Project Showcase Section */}
+        <ProjectShowcaseSection
+          onStartInquiryWithProject={(projectTitle) => scrollToContact(projectTitle)}
+        />
 
         {/* Why FineDev.tech Section */}
         <WhyUsSection />

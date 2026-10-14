@@ -46,11 +46,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
             {/* Main Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-[var(--text-primary)] leading-[1.08] font-display">
-              Build Better.{' '}
+              Digital ideas.<br />
               <span className="text-[var(--accent-primary)]">
-                Design Smarter.
-              </span>{' '}
-              Grow Faster.
+                Precisely engineered.
+              </span>
             </h1>
 
             {/* Supporting Text */}
@@ -73,10 +72,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               {/* Secondary CTA */}
               <button
                 type="button"
-                onClick={scrollToServices}
+                onClick={() => {
+                  const workEl = document.getElementById('work');
+                  if (workEl) {
+                    workEl.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    scrollToServices();
+                  }
+                }}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full text-base font-medium text-[var(--text-primary)] bg-[var(--bg-secondary)] hover:bg-[var(--bg-tertiary)] border border-[var(--border-color)] transition-all duration-200 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
               >
-                Explore Our Services
+                Explore Our Work
               </button>
             </div>
 

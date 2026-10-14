@@ -134,9 +134,9 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
               </div>
 
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[var(--text-primary)] font-display">
-                Have an Idea? <br />
+                Let’s build <br />
                 <span className="text-[var(--accent-primary)]">
-                  Let’s Build It.
+                  something meaningful.
                 </span>
               </h2>
 

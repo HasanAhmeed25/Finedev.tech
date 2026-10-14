@@ -22,7 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
       }
 
       // Check current section
-      const sections = ['hero', 'services', 'solutions', 'process', 'why-us', 'contact'];
+      const sections = ['hero', 'services', 'solutions', 'process', 'work', 'why-us', 'contact'];
       const scrollPosition = window.scrollY + 200;
 
       for (const sectionId of sections) {
@@ -46,7 +46,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
     { name: 'Home', href: '#hero', id: 'hero' },
     { name: 'Services', href: '#services', id: 'services' },
     { name: 'Solutions', href: '#solutions', id: 'solutions' },
-    { name: 'Our Process', href: '#process', id: 'process' },
+    { name: 'Process', href: '#process', id: 'process' },
+    { name: 'Work', href: '#work', id: 'work' },
     { name: 'About', href: '#why-us', id: 'why-us' },
   ];
 
@@ -76,8 +77,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
           isScrolled
-            ? 'py-3.5 bg-[var(--bg-primary)]/90 backdrop-blur-md border-b border-[var(--border-color)] shadow-sm'
-            : 'py-5 bg-[var(--bg-primary)]/40 backdrop-blur-sm border-b border-transparent'
+            ? 'py-3.5 bg-[var(--bg-card)]/95 backdrop-blur-md border-b border-[var(--border-color)] shadow-xs'
+            : 'py-5 bg-[var(--bg-card)]/80 backdrop-blur-sm border-b border-[var(--border-color)]/60'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

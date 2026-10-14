@@ -65,3 +65,19 @@ export interface TechCategory {
   description: string;
   technologies: TechItem[];
 }
+
+export interface ProjectItem {
+  id: string;
+  title: string;
+  category: string;
+  summary: string;
+  description: string;
+  techStack: string[];
+  status: 'Production Architecture' | 'Active Release' | 'Case Study' | 'Studio Framework';
+  liveUrl?: string;
+  githubUrl?: string;
+  badge: string;
+  metrics?: { label: string; value: string }[];
+  deliverables: string[];
+  layoutVariant: 'featured-large' | 'split-detail' | 'card';
+}

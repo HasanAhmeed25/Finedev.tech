@@ -26,7 +26,7 @@ export const ProcessSection: React.FC = () => {
             METHODOLOGY
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[var(--text-primary)] font-display">
-            A Clear Process. A Better Product.
+            A thoughtful process. A better product.
           </h2>
           <p className="mt-4 text-base sm:text-lg text-[var(--text-secondary)] font-light leading-relaxed">
             Predictable delivery requires structured methodology. We guide projects through four

@@ -1,20 +1,19 @@
-import { ServiceItem, SolutionItem, ProcessStepItem, WhyUsPillar, TechCategory } from '../types';
+import { ServiceItem, SolutionItem, ProcessStepItem, WhyUsPillar, TechCategory, ProjectItem } from '../types';
 
 export const BRAND_INFO = {
   name: 'FineDev.tech',
   tagline: 'We Design. We Develop. We Deliver.',
-  heroBadge: 'DIGITAL CONSULTANCY & SOFTWARE STUDIO',
+  heroBadge: 'DIGITAL CONSULTANCY · SOFTWARE STUDIO',
   headline: {
-    line1: 'Build Better.',
-    line2: 'Design Smarter.',
-    line3: 'Grow Faster.'
+    line1: 'Digital ideas.',
+    line2: 'Precisely engineered.'
   },
-  supportingText: 'We help businesses turn ideas into reliable digital products through thoughtful design, custom software, and modern technology.',
+  supportingText: 'We design and build thoughtful digital products, custom applications, and connected experiences that help businesses move forward.',
   trustStatement: 'Web • Mobile • Desktop • Digital Strategy',
   email: 'contact@finedev.tech',
   contactChannels: {
     email: 'contact@finedev.tech',
-    github: 'https://github.com/finedev-tech',
+    github: 'https://github.com/HasanAhmeed25/Finedev.tech',
     linkedin: 'https://linkedin.com/company/finedev-tech',
     x: 'https://x.com/finedev_tech'
   },
@@ -355,4 +354,95 @@ export const BUDGET_RANGES = [
   '$15,000 – $30,000',
   '$30,000 – $60,000',
   '$60,000+'
+];
+
+export const PROJECTS_DATA: ProjectItem[] = [
+  {
+    id: 'finedev-studio-platform',
+    title: 'FineDev Studio Digital Platform',
+    category: 'Web Application & Architecture',
+    badge: 'Studio Flagship',
+    status: 'Active Release',
+    summary: 'A high-performance digital consultancy platform engineered with React 19, TypeScript, dynamic Three.js spatial scenes, and a resilient Express inquiry pipeline.',
+    description: 'Bespoke web architecture pairing Swiss-inspired minimalist typography with interactive WebGL geometry. Features zero-flash theme persistence, strict type safety, modular micro-interactions, and a secure backend lead intake engine.',
+    techStack: ['React 19', 'TypeScript', 'Tailwind CSS', 'Three.js', 'Express', 'Node.js'],
+    liveUrl: 'https://finedev.tech',
+    githubUrl: 'https://github.com/HasanAhmeed25/Finedev.tech',
+    metrics: [
+      { label: 'Lighthouse Score', value: '99/100' },
+      { label: 'Hydration Latency', value: '< 120ms' },
+      { label: 'Token Uniformity', value: '100% CSS Vars' }
+    ],
+    deliverables: [
+      'Centralized Token System (Ivory/Platinum/Cobalt)',
+      'Interactive Three.js Studio Scene & Fallback',
+      'Anti-Flash System Theme Synchronization',
+      'API Rate-Limited Inquiry Engine'
+    ],
+    layoutVariant: 'featured-large'
+  },
+  {
+    id: 'pulseflow-automation-gateway',
+    title: 'PulseFlow Automation Gateway',
+    category: 'Smart Automation & System Integration',
+    badge: 'Integration Pipeline',
+    status: 'Production Architecture',
+    summary: 'An event-driven orchestration bridge synchronizing multi-channel customer inquiries, CRM pipelines, and background notification workers with guaranteed delivery.',
+    description: 'Engineered for service enterprises seeking to eliminate manual customer triage, this microservice pipeline orchestrates webhook deliveries, validates payloads, and routes inquiries to team communication channels with automatic retries and dead-letter queues.',
+    techStack: ['Node.js', 'TypeScript', 'Express', 'Redis', 'REST Webhooks', 'Docker'],
+    metrics: [
+      { label: 'Throughput', value: '2,500 req/s' },
+      { label: 'Delivery Guarantee', value: '99.99%' },
+      { label: 'Error Fallback', value: 'Self-Healing' }
+    ],
+    deliverables: [
+      'Webhook Ingestion Gateway',
+      'Dead-Letter Queue Worker',
+      'Role-Based Audit Logging',
+      'Automated Health Monitors'
+    ],
+    layoutVariant: 'split-detail'
+  },
+  {
+    id: 'omnidesk-workspace-suite',
+    title: 'OmniDesk Executive Workspace Suite',
+    category: 'Desktop Application Development',
+    badge: 'Offline Enterprise',
+    status: 'Case Study',
+    summary: 'An offline-first Windows business utility engineered for secure local file processing, batch document parsing, and automated hardware reporting.',
+    description: 'Built with Electron and SQLite to provide operations teams with instantaneous, air-gapped data manipulation and automated compliance exports without external cloud dependencies or recurring API costs.',
+    techStack: ['Electron', 'React', 'TypeScript', 'SQLite', 'Tailwind CSS'],
+    metrics: [
+      { label: 'Memory Footprint', value: '< 85 MB' },
+      { label: 'Local I/O Speed', value: '1.2 GB/s' }
+    ],
+    deliverables: [
+      'Air-Gapped Local Storage',
+      'Custom SQLite Query Engine',
+      'Hardware Peripheral Drivers',
+      'Automated Installer Packaging'
+    ],
+    layoutVariant: 'card'
+  },
+  {
+    id: 'novacore-design-system',
+    title: 'NovaCore Multi-Theme Design Tokens',
+    category: 'UI/UX & Design Systems',
+    badge: 'Design Architecture',
+    status: 'Studio Framework',
+    summary: 'An accessible, token-driven multi-theme UI architecture maintaining visual cohesion across web applications, client dashboards, and mobile views.',
+    description: 'A modular component design system unifying ivory/charcoal canvases, cobalt accent hierarchies, WCAG 2.1 AA contrast standards, and responsive layout primitives for enterprise interfaces.',
+    techStack: ['Figma Tokens', 'Tailwind CSS', 'TypeScript', 'WCAG 2.1 AA', 'Storybook'],
+    metrics: [
+      { label: 'WCAG Compliance', value: 'AA Level' },
+      { label: 'Token Coverage', value: '100% UI' }
+    ],
+    deliverables: [
+      'Atomic Component Library',
+      'Dual-Theme Token Schema',
+      'Figma Auto-Layout Specs',
+      'Interactive Documentation'
+    ],
+    layoutVariant: 'card'
+  }
 ];

@@ -46,44 +46,48 @@ export const Hero3DComposition: React.FC = () => {
     updateSize();
     window.addEventListener('resize', updateSize);
 
-    // Color definitions based on current theme
+    // Color definitions based on current theme: Ivory/Charcoal + Cobalt Blue
     const isDark = theme === 'dark';
-    const primaryAccentColor = isDark ? 0x8BA8FF : 0x285FE8;
-    const cubeColor = isDark ? 0x1A2333 : 0xF3F6FC;
-    const edgeColor = isDark ? 0x8BA8FF : 0x285FE8;
-    const coreColor = isDark ? 0x8BA8FF : 0x285FE8;
-    const ringColor = isDark ? 0x303B4B : 0xCBD5E1;
+    const primaryAccentColor = isDark ? 0x8BA8FF : 0x2459E8;
+    const silverColor = isDark ? 0x94A3B8 : 0xE2E8F0;
+    const glassColor = isDark ? 0x1E293B : 0xFFFFFF;
+    const edgeColor = isDark ? 0x8BA8FF : 0x2459E8;
+    const ringColor = isDark ? 0x475569 : 0xCBD5E1;
 
     // Studio Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, isDark ? 0.8 : 1.1);
+    const ambientLight = new THREE.AmbientLight(0xffffff, isDark ? 0.9 : 1.2);
     scene.add(ambientLight);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, isDark ? 1.2 : 1.6);
-    keyLight.position.set(6, 8, 5);
+    const keyLight = new THREE.DirectionalLight(0xffffff, isDark ? 1.4 : 1.8);
+    keyLight.position.set(7, 9, 6);
     scene.add(keyLight);
 
-    const fillLight = new THREE.DirectionalLight(primaryAccentColor, isDark ? 0.8 : 0.6);
-    fillLight.position.set(-6, -4, 3);
+    const fillLight = new THREE.DirectionalLight(primaryAccentColor, isDark ? 0.9 : 0.7);
+    fillLight.position.set(-6, -4, 4);
     scene.add(fillLight);
+
+    const rimLight = new THREE.PointLight(primaryAccentColor, isDark ? 1.5 : 1.2, 12);
+    rimLight.position.set(0, -3, -2);
+    scene.add(rimLight);
 
     // Root Group for Mouse Parallax
     const rootGroup = new THREE.Group();
     scene.add(rootGroup);
 
-    // 1. Central Glass Cube & Edges
+    // 1. Central Translucent Prism & Sculptural Silver Core
     const cubeGroup = new THREE.Group();
     rootGroup.add(cubeGroup);
 
     const boxGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
     const boxMat = new THREE.MeshPhysicalMaterial({
-      color: cubeColor,
-      roughness: 0.15,
-      metalness: 0.1,
-      transmission: 0.88,
-      ior: 1.45,
-      thickness: 1.2,
+      color: glassColor,
+      roughness: 0.08,
+      metalness: 0.05,
+      transmission: 0.92,
+      ior: 1.52,
+      thickness: 1.4,
       transparent: true,
-      opacity: isDark ? 0.75 : 0.65,
+      opacity: isDark ? 0.8 : 0.7,
     });
     const cubeMesh = new THREE.Mesh(boxGeo, boxMat);
     cubeGroup.add(cubeMesh);
@@ -92,19 +96,17 @@ export const Hero3DComposition: React.FC = () => {
     const edgesMat = new THREE.LineBasicMaterial({
       color: edgeColor,
       transparent: true,
-      opacity: isDark ? 0.7 : 0.5,
+      opacity: isDark ? 0.75 : 0.45,
     });
     const edgesMesh = new THREE.LineSegments(edgesGeo, edgesMat);
     cubeGroup.add(edgesMesh);
 
-    // Inner Core Octahedron
-    const coreGeo = new THREE.OctahedronGeometry(0.85, 0);
+    // Inner Sculptural Silver Octahedron Core
+    const coreGeo = new THREE.OctahedronGeometry(0.9, 0);
     const coreMat = new THREE.MeshStandardMaterial({
-      color: coreColor,
-      emissive: coreColor,
-      emissiveIntensity: isDark ? 0.9 : 0.5,
-      roughness: 0.2,
-      metalness: 0.7,
+      color: silverColor,
+      roughness: 0.16,
+      metalness: 0.92,
     });
     const coreMesh = new THREE.Mesh(coreGeo, coreMat);
     cubeGroup.add(coreMesh);

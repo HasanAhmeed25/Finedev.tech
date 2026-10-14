@@ -76,7 +76,16 @@ export const Footer: React.FC<FooterProps> = ({ onSelectService }) => {
                   onClick={(e) => handleNavClick(e, '#process')}
                   className="hover:text-white transition-colors"
                 >
-                  Our Process
+                  Process
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#work"
+                  onClick={(e) => handleNavClick(e, '#work')}
+                  className="hover:text-white transition-colors"
+                >
+                  Selected Work
                 </a>
               </li>
               <li>

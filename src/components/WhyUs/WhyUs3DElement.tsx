@@ -44,8 +44,8 @@ export const WhyUs3DElement: React.FC = () => {
     window.addEventListener('resize', updateSize);
 
     const isDark = theme === 'dark';
-    const accentColor = isDark ? 0x8BA8FF : 0x285FE8;
-    const ring1Color = isDark ? 0x8BA8FF : 0x285FE8;
+    const accentColor = isDark ? 0x8BA8FF : 0x2459E8;
+    const ring1Color = isDark ? 0x8BA8FF : 0x2459E8;
     const ring2Color = isDark ? 0x303B4B : 0xCBD5E1;
     const coreColor = isDark ? 0x1E2738 : 0xF3F6FC;
 
