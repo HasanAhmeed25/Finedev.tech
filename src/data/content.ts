@@ -5,11 +5,11 @@ export const BRAND_INFO = {
   tagline: 'We Design. We Develop. We Deliver.',
   heroBadge: 'DIGITAL CONSULTANCY & SOFTWARE STUDIO',
   headline: {
-    line1: 'We Build Digital',
-    line2: 'Experiences That',
-    line3: 'Move Businesses Forward.'
+    line1: 'Build Better.',
+    line2: 'Design Smarter.',
+    line3: 'Grow Faster.'
   },
-  supportingText: 'From ambitious ideas to powerful digital products, we design, develop, and deliver technology that helps businesses grow.',
+  supportingText: 'We help businesses turn ideas into reliable digital products through thoughtful design, custom software, and modern technology.',
   trustStatement: 'Web • Mobile • Desktop • Digital Strategy',
   email: 'contact@finedev.tech',
   contactChannels: {

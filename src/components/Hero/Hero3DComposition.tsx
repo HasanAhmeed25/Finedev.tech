@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
+import { useTheme } from '../../context/ThemeContext';
 import { HeroFallback3D } from './HeroFallback3D';
 
 export const Hero3DComposition: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hasWebGLError, setHasWebGLError] = useState(false);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -30,7 +32,6 @@ export const Hero3DComposition: React.FC = () => {
     const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
     camera.position.set(0, 0, 7.5);
 
-    // Resize handler
     const updateSize = () => {
       if (!container || !renderer) return;
       const width = container.clientWidth;
@@ -45,21 +46,25 @@ export const Hero3DComposition: React.FC = () => {
     updateSize();
     window.addEventListener('resize', updateSize);
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+    // Color definitions based on current theme
+    const isDark = theme === 'dark';
+    const primaryAccentColor = isDark ? 0x8BA8FF : 0x285FE8;
+    const cubeColor = isDark ? 0x1A2333 : 0xF3F6FC;
+    const edgeColor = isDark ? 0x8BA8FF : 0x285FE8;
+    const coreColor = isDark ? 0x8BA8FF : 0x285FE8;
+    const ringColor = isDark ? 0x303B4B : 0xCBD5E1;
+
+    // Studio Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, isDark ? 0.8 : 1.1);
     scene.add(ambientLight);
 
-    const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
-    dirLight.position.set(8, 10, 6);
-    scene.add(dirLight);
+    const keyLight = new THREE.DirectionalLight(0xffffff, isDark ? 1.2 : 1.6);
+    keyLight.position.set(6, 8, 5);
+    scene.add(keyLight);
 
-    const violetLight = new THREE.PointLight(0xc084fc, 3.5, 15);
-    violetLight.position.set(-5, 4, 3);
-    scene.add(violetLight);
-
-    const cyanLight = new THREE.PointLight(0x22d3ee, 3.5, 15);
-    cyanLight.position.set(5, -4, 3);
-    scene.add(cyanLight);
+    const fillLight = new THREE.DirectionalLight(primaryAccentColor, isDark ? 0.8 : 0.6);
+    fillLight.position.set(-6, -4, 3);
+    scene.add(fillLight);
 
     // Root Group for Mouse Parallax
     const rootGroup = new THREE.Group();
@@ -71,36 +76,35 @@ export const Hero3DComposition: React.FC = () => {
 
     const boxGeo = new THREE.BoxGeometry(2.1, 2.1, 2.1);
     const boxMat = new THREE.MeshPhysicalMaterial({
-      color: 0x8b5cf6,
+      color: cubeColor,
       roughness: 0.15,
       metalness: 0.1,
-      transmission: 0.85,
+      transmission: 0.88,
       ior: 1.45,
       thickness: 1.2,
       transparent: true,
-      opacity: 0.7,
+      opacity: isDark ? 0.75 : 0.65,
     });
     const cubeMesh = new THREE.Mesh(boxGeo, boxMat);
     cubeGroup.add(cubeMesh);
 
     const edgesGeo = new THREE.EdgesGeometry(boxGeo);
     const edgesMat = new THREE.LineBasicMaterial({
-      color: 0x38bdf8,
-      linewidth: 1.5,
+      color: edgeColor,
       transparent: true,
-      opacity: 0.75,
+      opacity: isDark ? 0.7 : 0.5,
     });
     const edgesMesh = new THREE.LineSegments(edgesGeo, edgesMat);
     cubeGroup.add(edgesMesh);
 
-    // Inner Glowing Core Octahedron
+    // Inner Core Octahedron
     const coreGeo = new THREE.OctahedronGeometry(0.85, 0);
     const coreMat = new THREE.MeshStandardMaterial({
-      color: 0x22d3ee,
-      emissive: 0x06b6d4,
-      emissiveIntensity: 1.8,
+      color: coreColor,
+      emissive: coreColor,
+      emissiveIntensity: isDark ? 0.9 : 0.5,
       roughness: 0.2,
-      metalness: 0.8,
+      metalness: 0.7,
     });
     const coreMesh = new THREE.Mesh(coreGeo, coreMat);
     cubeGroup.add(coreMesh);
@@ -110,27 +114,27 @@ export const Hero3DComposition: React.FC = () => {
     rootGroup.add(nodesGroup);
 
     const nodeCoords: [number, number, number][] = [
-      [2.2, 1.4, -0.6],
-      [-2.3, 1.2, 0.8],
-      [1.8, -2.0, 1.1],
-      [-1.9, -1.6, -1.0],
-      [0.2, 2.4, 0.4],
-      [-0.4, -2.5, 0.5],
+      [2.2, 1.3, -0.6],
+      [-2.2, 1.1, 0.8],
+      [1.7, -1.9, 1.0],
+      [-1.8, -1.5, -0.9],
+      [0.2, 2.3, 0.4],
+      [-0.3, -2.4, 0.5],
     ];
 
-    const nodeGeo = new THREE.SphereGeometry(0.12, 16, 16);
+    const nodeGeo = new THREE.SphereGeometry(0.1, 16, 16);
     nodeCoords.forEach((coord, i) => {
       const nodeMat = new THREE.MeshStandardMaterial({
-        color: i % 2 === 0 ? 0xc084fc : 0x22d3ee,
-        emissive: i % 2 === 0 ? 0x9333ea : 0x0284c7,
-        emissiveIntensity: 2.2,
+        color: i % 2 === 0 ? primaryAccentColor : ringColor,
+        roughness: 0.2,
+        metalness: 0.8,
       });
       const nodeMesh = new THREE.Mesh(nodeGeo, nodeMat);
       nodeMesh.position.set(...coord);
       nodesGroup.add(nodeMesh);
     });
 
-    // Connecting Lines
+    // Clean Connection Lines
     const linePoints: THREE.Vector3[] = [];
     nodeCoords.forEach((coord, idx) => {
       linePoints.push(new THREE.Vector3(0, 0, 0));
@@ -141,74 +145,54 @@ export const Hero3DComposition: React.FC = () => {
     });
     const linesGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
     const linesMat = new THREE.LineBasicMaterial({
-      color: 0x818cf8,
+      color: edgeColor,
       transparent: true,
-      opacity: 0.35,
+      opacity: isDark ? 0.3 : 0.2,
     });
     const rays = new THREE.LineSegments(linesGeo, linesMat);
     nodesGroup.add(rays);
 
     // 3. Orbiting Torus Ring
-    const torusGeo = new THREE.TorusGeometry(3.1, 0.035, 16, 90);
+    const torusGeo = new THREE.TorusGeometry(3.1, 0.03, 16, 90);
     const torusMat = new THREE.MeshStandardMaterial({
-      color: 0xc084fc,
-      emissive: 0xa855f7,
-      emissiveIntensity: 1.4,
+      color: ringColor,
+      roughness: 0.3,
+      metalness: 0.7,
       transparent: true,
-      opacity: 0.55,
+      opacity: 0.6,
     });
     const torusMesh = new THREE.Mesh(torusGeo, torusMat);
     torusMesh.rotation.x = Math.PI / 4;
     rootGroup.add(torusMesh);
 
-    // 4. Floating Interface Panels
-    const panelGeo1 = new THREE.BoxGeometry(1.6, 0.9, 0.04);
+    // 4. Subtle Abstract Floating Software Interface Panels
+    const panelGeo1 = new THREE.BoxGeometry(1.6, 0.9, 0.03);
     const panelMat1 = new THREE.MeshPhysicalMaterial({
-      color: 0x9333ea,
+      color: isDark ? 0x202D49 : 0xFFFFFF,
       roughness: 0.2,
       metalness: 0.1,
       transmission: 0.85,
       transparent: true,
-      opacity: 0.5,
+      opacity: isDark ? 0.6 : 0.8,
     });
     const panel1 = new THREE.Mesh(panelGeo1, panelMat1);
     panel1.position.set(-2.4, 1.8, -1.0);
-    panel1.rotation.set(0.2, 0.3, -0.1);
+    panel1.rotation.set(0.18, 0.25, -0.08);
     rootGroup.add(panel1);
 
-    const panelGeo2 = new THREE.BoxGeometry(1.7, 1.0, 0.04);
+    const panelGeo2 = new THREE.BoxGeometry(1.7, 1.0, 0.03);
     const panelMat2 = new THREE.MeshPhysicalMaterial({
-      color: 0x06b6d4,
+      color: isDark ? 0x1B2430 : 0xF5F6F8,
       roughness: 0.2,
       metalness: 0.1,
       transmission: 0.85,
       transparent: true,
-      opacity: 0.5,
+      opacity: isDark ? 0.6 : 0.8,
     });
     const panel2 = new THREE.Mesh(panelGeo2, panelMat2);
     panel2.position.set(2.5, -1.6, 0.5);
-    panel2.rotation.set(-0.15, -0.3, 0.1);
+    panel2.rotation.set(-0.15, -0.25, 0.08);
     rootGroup.add(panel2);
-
-    // 5. Particle Dust Field
-    const particleCount = 180;
-    const particlePositions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      particlePositions[i] = (Math.random() - 0.5) * 16;
-      particlePositions[i + 1] = (Math.random() - 0.5) * 16;
-      particlePositions[i + 2] = (Math.random() - 0.5) * 10;
-    }
-    const particleGeo = new THREE.BufferGeometry();
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-    const particleMat = new THREE.PointsMaterial({
-      size: 0.06,
-      color: 0x38bdf8,
-      transparent: true,
-      opacity: 0.7,
-      sizeAttenuation: true,
-    });
-    const particleField = new THREE.Points(particleGeo, particleMat);
-    scene.add(particleField);
 
     // Pointer Parallax Tracking
     let targetRotationX = 0;
@@ -218,8 +202,8 @@ export const Hero3DComposition: React.FC = () => {
       const rect = container.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width - 0.5;
       const y = (e.clientY - rect.top) / rect.height - 0.5;
-      targetRotationY = x * 0.45;
-      targetRotationX = -y * 0.35;
+      targetRotationY = x * 0.4;
+      targetRotationX = -y * 0.3;
     };
 
     window.addEventListener('mousemove', handlePointerMove);
@@ -233,25 +217,22 @@ export const Hero3DComposition: React.FC = () => {
       const delta = clock.getDelta();
       const elapsedTime = clock.getElapsedTime();
 
-      // Smooth float & rotation
-      cubeGroup.position.y = Math.sin(elapsedTime * 1.5) * 0.15;
-      cubeMesh.rotation.x += delta * 0.25;
-      cubeMesh.rotation.y += delta * 0.35;
+      cubeGroup.position.y = Math.sin(elapsedTime * 1.4) * 0.12;
+      cubeMesh.rotation.x += delta * 0.2;
+      cubeMesh.rotation.y += delta * 0.28;
       edgesMesh.rotation.x = cubeMesh.rotation.x;
       edgesMesh.rotation.y = cubeMesh.rotation.y;
-      coreMesh.rotation.x -= delta * 0.3;
-      coreMesh.rotation.y -= delta * 0.4;
+      coreMesh.rotation.x -= delta * 0.25;
+      coreMesh.rotation.y -= delta * 0.35;
 
-      nodesGroup.rotation.y += delta * 0.12;
-      nodesGroup.rotation.z += delta * 0.08;
+      nodesGroup.rotation.y += delta * 0.1;
+      nodesGroup.rotation.z += delta * 0.06;
 
-      torusMesh.rotation.x += delta * 0.15;
-      torusMesh.rotation.y -= delta * 0.2;
+      torusMesh.rotation.x += delta * 0.12;
+      torusMesh.rotation.y -= delta * 0.16;
 
-      panel1.position.y = 1.8 + Math.sin(elapsedTime * 1.8 + 1) * 0.12;
-      panel2.position.y = -1.6 + Math.cos(elapsedTime * 1.6) * 0.12;
-
-      particleField.rotation.y += delta * 0.02;
+      panel1.position.y = 1.8 + Math.sin(elapsedTime * 1.6 + 1) * 0.1;
+      panel2.position.y = -1.6 + Math.cos(elapsedTime * 1.4) * 0.1;
 
       // Smooth Parallax Lerp
       rootGroup.rotation.y += (targetRotationY - rootGroup.rotation.y) * 0.05;
@@ -262,13 +243,11 @@ export const Hero3DComposition: React.FC = () => {
 
     animate();
 
-    // Cleanup
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', updateSize);
       window.removeEventListener('mousemove', handlePointerMove);
 
-      // Dispose resources
       boxGeo.dispose();
       boxMat.dispose();
       edgesGeo.dispose();
@@ -284,11 +263,9 @@ export const Hero3DComposition: React.FC = () => {
       panelMat1.dispose();
       panelGeo2.dispose();
       panelMat2.dispose();
-      particleGeo.dispose();
-      particleMat.dispose();
       renderer.dispose();
     };
-  }, []);
+  }, [theme]);
 
   if (hasWebGLError) {
     return <HeroFallback3D />;
@@ -299,12 +276,6 @@ export const Hero3DComposition: React.FC = () => {
       ref={containerRef}
       className="relative w-full h-[450px] lg:h-[540px] select-none flex items-center justify-center overflow-hidden"
     >
-      {/* Soft radial background depth */}
-      <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-        <div className="w-80 h-80 rounded-full bg-purple-600/15 blur-[100px]" />
-        <div className="w-72 h-72 rounded-full bg-cyan-500/10 blur-[90px] translate-x-10 translate-y-10" />
-      </div>
-
       {/* 3D Canvas */}
       <canvas
         ref={canvasRef}
@@ -313,15 +284,15 @@ export const Hero3DComposition: React.FC = () => {
 
       {/* Interactive Floating Pipeline Badge */}
       <div className="absolute -bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 pointer-events-auto">
-        <div className="px-4 py-2.5 rounded-full bg-[#0e1224]/85 backdrop-blur-xl border border-white/10 shadow-[0_10px_30px_rgba(0,0,0,0.5)] flex items-center gap-2 text-xs font-mono">
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-          <span className="text-slate-300 font-medium">Ideas</span>
-          <span className="text-purple-400">→</span>
-          <span className="text-slate-300 font-medium">Design</span>
-          <span className="text-purple-400">→</span>
-          <span className="text-slate-300 font-medium">Development</span>
-          <span className="text-purple-400">→</span>
-          <span className="text-cyan-300 font-semibold">Launch</span>
+        <div className="px-4 py-2 rounded-full bg-[var(--bg-card)] border border-[var(--border-color)] shadow-sm flex items-center gap-2 text-xs font-mono">
+          <span className="w-2 h-2 rounded-full bg-[var(--accent-primary)] animate-pulse" />
+          <span className="text-[var(--text-secondary)] font-medium">Ideas</span>
+          <span className="text-[var(--text-muted)]">→</span>
+          <span className="text-[var(--text-secondary)] font-medium">Design</span>
+          <span className="text-[var(--text-muted)]">→</span>
+          <span className="text-[var(--text-secondary)] font-medium">Development</span>
+          <span className="text-[var(--text-muted)]">→</span>
+          <span className="text-[var(--accent-primary)] font-semibold">Launch</span>
         </div>
       </div>
     </div>

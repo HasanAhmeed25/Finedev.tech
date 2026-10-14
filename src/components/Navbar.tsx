@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GeometricLogo } from './UI/GeometricLogo';
-import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+import { Menu, X, ArrowUpRight, Sun, Moon } from 'lucide-react';
 
 interface NavbarProps {
   onOpenContact?: () => void;
@@ -10,10 +11,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('hero');
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 20) {
+      if (window.scrollY > 15) {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);
@@ -72,10 +74,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
           isScrolled
-            ? 'py-3 bg-[#080a12]/80 backdrop-blur-xl border-b border-white/[0.08] shadow-[0_4px_30px_rgba(0,0,0,0.5)]'
-            : 'py-5 bg-transparent border-b border-transparent'
+            ? 'py-3.5 bg-[var(--bg-primary)]/90 backdrop-blur-md border-b border-[var(--border-color)] shadow-sm'
+            : 'py-5 bg-[var(--bg-primary)]/40 backdrop-blur-sm border-b border-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,14 +86,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
             <a
               href="#hero"
               onClick={(e) => handleNavClick(e, '#hero')}
-              className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 rounded-lg p-1"
+              className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] rounded-lg p-1"
               aria-label="FineDev.tech - Home"
             >
               <GeometricLogo />
             </a>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-1 px-4 py-1.5 rounded-full bg-[#101424]/60 border border-white/[0.06] backdrop-blur-md">
+            <nav className="hidden md:flex items-center gap-1 px-4 py-1.5 rounded-full bg-[var(--bg-secondary)] border border-[var(--border-color)]">
               {navLinks.map((link) => {
                 const isActive = activeSection === link.id;
                 return (
@@ -101,44 +103,56 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                     onClick={(e) => handleNavClick(e, link.href)}
                     className={`relative px-4 py-1.5 text-sm font-medium transition-colors rounded-full ${
                       isActive
-                        ? 'text-white font-semibold'
-                        : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.03]'
+                        ? 'text-[var(--accent-primary)] font-semibold bg-[var(--bg-primary)] shadow-xs'
+                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]/50'
                     }`}
                   >
-                    {isActive && (
-                      <span className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-purple-500/30 rounded-full -z-10 animate-fade-in" />
-                    )}
                     {link.name}
                   </a>
                 );
               })}
             </nav>
 
-            {/* Right Action */}
-            <div className="hidden md:flex items-center gap-4">
+            {/* Right Action & Theme Toggle */}
+            <div className="flex items-center gap-3">
+              {/* Theme Toggle Button */}
               <button
                 type="button"
-                onClick={handleCtaClick}
-                className="relative group inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium text-white overflow-hidden transition-all duration-300 bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-500 hover:shadow-[0_0_20px_rgba(139,92,246,0.5)] active:scale-95"
+                onClick={toggleTheme}
+                className="p-2 rounded-full border border-[var(--border-color)] bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent-primary)]/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)] transition-all"
+                aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+                title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
               >
-                <span className="relative z-10 flex items-center gap-1.5 font-semibold tracking-wide">
-                  Let’s Talk
-                  <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </span>
-                <span className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-0" />
+                {theme === 'light' ? (
+                  <Moon className="w-4 h-4 transition-transform duration-200" />
+                ) : (
+                  <Sun className="w-4 h-4 text-amber-400 transition-transform duration-200" />
+                )}
+              </button>
+
+              {/* Desktop CTA */}
+              <div className="hidden md:flex items-center">
+                <button
+                  type="button"
+                  onClick={handleCtaClick}
+                  className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-semibold text-white bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] transition-all duration-200 shadow-sm hover:shadow active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+                >
+                  <span>Let’s Talk</span>
+                  <ArrowUpRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </button>
+              </div>
+
+              {/* Mobile Hamburger Button */}
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="md:hidden inline-flex items-center justify-center p-2 rounded-lg text-[var(--text-primary)] hover:bg-[var(--bg-secondary)] border border-[var(--border-color)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-primary)]"
+                aria-expanded={mobileMenuOpen}
+                aria-label="Toggle navigation menu"
+              >
+                {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
-
-            {/* Mobile Hamburger Button */}
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden inline-flex items-center justify-center p-2 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-purple-400"
-              aria-expanded={mobileMenuOpen}
-              aria-label="Toggle navigation menu"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6 text-purple-400" /> : <Menu className="w-6 h-6" />}
-            </button>
           </div>
         </div>
       </header>
@@ -146,11 +160,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-40 md:hidden bg-black/60 backdrop-blur-xl animate-fade-in"
+          className="fixed inset-0 z-40 md:hidden bg-black/40 backdrop-blur-sm animate-fade-in"
           onClick={() => setMobileMenuOpen(false)}
         >
           <div
-            className="fixed top-20 left-4 right-4 bg-[#0e1222] border border-white/10 rounded-2xl p-6 shadow-2xl flex flex-col gap-4"
+            className="fixed top-20 left-4 right-4 bg-[var(--bg-card)] border border-[var(--border-color)] rounded-2xl p-6 shadow-xl flex flex-col gap-4"
             onClick={(e) => e.stopPropagation()}
           >
             <nav className="flex flex-col gap-2">
@@ -161,8 +175,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
                   onClick={(e) => handleNavClick(e, link.href)}
                   className={`px-4 py-3 rounded-xl text-base font-medium transition-colors ${
                     activeSection === link.id
-                      ? 'bg-purple-600/20 text-white border border-purple-500/30'
-                      : 'text-slate-300 hover:bg-white/5 hover:text-white'
+                      ? 'bg-[var(--accent-soft)] text-[var(--accent-primary)] font-semibold'
+                      : 'text-[var(--text-primary)] hover:bg-[var(--bg-secondary)]'
                   }`}
                 >
                   {link.name}
@@ -170,11 +184,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenContact }) => {
               ))}
             </nav>
 
-            <div className="pt-3 border-t border-white/10 flex flex-col gap-3">
+            <div className="pt-3 border-t border-[var(--border-color)] flex flex-col gap-3">
               <button
                 type="button"
                 onClick={handleCtaClick}
-                className="w-full py-3 px-5 rounded-xl text-center font-semibold text-white bg-gradient-to-r from-purple-600 to-cyan-500 flex items-center justify-center gap-2 shadow-lg shadow-purple-900/40"
+                className="w-full py-3 px-5 rounded-xl text-center font-semibold text-white bg-[var(--accent-primary)] hover:bg-[var(--accent-hover)] flex items-center justify-center gap-2 shadow-sm"
               >
                 Let’s Talk
                 <ArrowUpRight className="w-4 h-4" />

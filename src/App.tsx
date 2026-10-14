@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ThemeProvider } from './context/ThemeContext';
 import { BackgroundGrid } from './components/UI/BackgroundGrid';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/Hero/HeroSection';
@@ -30,16 +31,16 @@ class RootErrorBoundary extends React.Component<
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-[#07080d] text-white p-8 flex flex-col items-center justify-center font-mono">
-          <div className="max-w-xl p-6 rounded-2xl bg-red-950/50 border border-red-500/40 text-left">
-            <h2 className="text-xl font-bold text-red-300 mb-2">Rendering Error Detected</h2>
-            <p className="text-sm text-red-200 mb-4">{this.state.error?.message}</p>
-            <pre className="text-xs bg-black/50 p-4 rounded text-slate-300 overflow-auto max-h-60">
+        <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] p-8 flex flex-col items-center justify-center font-mono">
+          <div className="max-w-xl p-6 rounded-2xl bg-red-500/10 border border-red-500/30 text-left">
+            <h2 className="text-xl font-bold text-red-600 dark:text-red-400 mb-2">Rendering Error Detected</h2>
+            <p className="text-sm text-[var(--text-secondary)] mb-4">{this.state.error?.message}</p>
+            <pre className="text-xs bg-[var(--bg-secondary)] p-4 rounded text-[var(--text-secondary)] overflow-auto max-h-60 border border-[var(--border-color)]">
               {this.state.error?.stack}
             </pre>
             <button
               onClick={() => window.location.reload()}
-              className="mt-4 px-4 py-2 rounded bg-red-600 text-white text-xs font-bold"
+              className="mt-4 px-4 py-2 rounded-lg bg-[var(--accent-primary)] text-white text-xs font-bold hover:bg-[var(--accent-hover)] transition-colors"
             >
               Reload Page
             </button>
@@ -51,7 +52,7 @@ class RootErrorBoundary extends React.Component<
   }
 }
 
-export const App: React.FC = () => {
+export const AppContent: React.FC = () => {
   const [inquiryProjectType, setInquiryProjectType] = useState<string>('');
 
   const scrollToContact = (projectType?: string) => {
@@ -72,49 +73,57 @@ export const App: React.FC = () => {
   };
 
   return (
-    <RootErrorBoundary>
-      <div className="relative min-h-screen bg-[#07080d] text-slate-100 overflow-x-hidden selection:bg-purple-600/30 selection:text-cyan-300">
-        {/* Ambient Visual Grid & Glow Background */}
-        <BackgroundGrid />
+    <div className="relative min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] overflow-x-hidden selection:bg-[var(--accent-primary)]/20 selection:text-[var(--accent-primary)] transition-colors duration-250">
+      {/* Ambient Visual Grid Background */}
+      <BackgroundGrid />
 
-        {/* Main Content Layout */}
-        <div className="relative z-10 flex flex-col min-h-screen">
-          {/* Navigation Bar */}
-          <Navbar onOpenContact={() => scrollToContact()} />
+      {/* Main Content Layout */}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* Navigation Bar */}
+        <Navbar onOpenContact={() => scrollToContact()} />
 
-          {/* Hero Section */}
-          <HeroSection
-            onStartProject={() => scrollToContact()}
-            onExploreServices={scrollToServices}
-          />
+        {/* Hero Section */}
+        <HeroSection
+          onStartProject={() => scrollToContact()}
+          onExploreServices={scrollToServices}
+        />
 
-          {/* Services Section */}
-          <ServicesSection
-            onSelectServiceForInquiry={(serviceTitle) => scrollToContact(serviceTitle)}
-          />
+        {/* Services Section */}
+        <ServicesSection
+          onSelectServiceForInquiry={(serviceTitle) => scrollToContact(serviceTitle)}
+        />
 
-          {/* Featured Solutions Section */}
-          <SolutionsSection
-            onStartInquiryWithSolution={(solutionTitle) => scrollToContact(solutionTitle)}
-          />
+        {/* Featured Solutions Section */}
+        <SolutionsSection
+          onStartInquiryWithSolution={(solutionTitle) => scrollToContact(solutionTitle)}
+        />
 
-          {/* Development Process Section */}
-          <ProcessSection />
+        {/* Development Process Section */}
+        <ProcessSection />
 
-          {/* Why FineDev.tech Section */}
-          <WhyUsSection />
+        {/* Why FineDev.tech Section */}
+        <WhyUsSection />
 
-          {/* Technology Ecosystem Section */}
-          <TechStackSection />
+        {/* Technology Ecosystem Section */}
+        <TechStackSection />
 
-          {/* Project Inquiry / Contact Section */}
-          <ContactSection initialProjectType={inquiryProjectType} />
+        {/* Project Inquiry / Contact Section */}
+        <ContactSection initialProjectType={inquiryProjectType} />
 
-          {/* Footer */}
-          <Footer onSelectService={(serviceTitle) => scrollToContact(serviceTitle)} />
-        </div>
+        {/* Footer */}
+        <Footer onSelectService={(serviceTitle) => scrollToContact(serviceTitle)} />
       </div>
-    </RootErrorBoundary>
+    </div>
+  );
+};
+
+export const App: React.FC = () => {
+  return (
+    <ThemeProvider>
+      <RootErrorBoundary>
+        <AppContent />
+      </RootErrorBoundary>
+    </ThemeProvider>
   );
 };
 
